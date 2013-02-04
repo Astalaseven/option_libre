@@ -1,0 +1,63 @@
+" vim -c 'argdo source epub' -c 'quit' fichier.xml
+"
+" Remplace les tabulations par 'rien'
+:%s/\t//g
+
+" Met tout sur une ligne
+:%s/\n/ /g 
+
+" Remplacement des div par p
+" 1ère ligne : id à un chiffre, 2e ligne : id à 2 chiffres, etc.
+:%s/<div class="p_xmlatex" id="p\d">/<p>/g
+:%s/<div class="p_xmlatex" id="p\d\d">/<p>/g
+:%s/<div class="p_xmlatex" id="p\d\d\d">/<p>/g
+:%s/<\/div>/<\/p>/g
+
+" Coupe les lignes sur </p>
+:%s/<\/p> /<\/p>\r/g
+
+" Coupe les lignes de titre (h1, h2...)
+" \d est le joker du chiffre (batman!), 
+" \0 print l'élément recherché (<h1>, <h2>, etc.)
+:%s/<\/h\d> /\0\r/g
+
+" Mise en page des listes
+:%s/<ul>/<ul>\r/g
+:%s/<\/ul>/<\/ul>\r/g
+:%s/<ol>/<ol>\r/g
+:%s/<\/ol>/<\/ol>\r/g
+:%s/<\/li>/<\/li>\r/g
+:%s/<\/p>\n<\/li>/<\/li>/g
+
+
+" Tabule les titres
+:%s/<h\d>/\t\0/g
+
+" Tabule les listes
+:%s/<ul>/\t<ul>/g
+:%s/<ol>/\t<ol>/g
+:%s/<li>/\t\t<li>/g
+:%s/<li> \t<p>/<li> <p>/g
+
+" Corrige les titres (d'après ce que je connais en LaTeX,
+" ça ne devrait pas dépasser les subsub :))
+:s%/class="section_xmlatex"//g
+:%s/class="subsection_xmlatex"//g 
+:%s/class="subsubsection_xmlatex"//g 
+
+:%s/class="t\d_xmlatex" id="t\d-\d"><span class="t\d_num_xmlatex"//g
+" <h5 class="t4_xmlatex" id="t4-20"><span class="t4_num_xmlatex">3.2.2.1.a</span> 
+" <h5 id="ch1.1.1.1">1.1.1.1 
+
+" Remplace les notes de bas de page (en légèreté)
+:%s/class="page_footnote_xmlatex"/epub:type="noteref"/g
+
+" Corrige les balises 'auteur'
+:%s/class="sc_xmlatex"/class="auteur"/g
+    
+" Et on s'amuse avec les notes de bas de page...
+:%s/<div class="text_footnote_xmlatex" id="o\d">/<p>/g
+:%s/<div class="text_footnote_xmlatex" id="o\d\d">/<p>/g
+
+" Tabule les paragraphes
+:%s/<p>/\t<p>/g 
